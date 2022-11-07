@@ -1,9 +1,10 @@
 import { Body, Controller, Post, UsePipes } from "@nestjs/common";
+import { ApiOperation, ApiProperty, ApiResponse } from "@nestjs/swagger";
+import { Prop } from "@nestjs/mongoose";
+
 import { CreateUserDto } from "../users/dto/create-user.dto";
 import { AuthService } from "./auth.service";
-import { ApiOperation, ApiProperty, ApiResponse } from "@nestjs/swagger";
 import { User } from "../users/schemas/user.schema";
-import { Prop } from "@nestjs/mongoose";
 import { ValidationPipe } from "../pipes/validation.pipe";
 
 class Auth {
@@ -15,6 +16,7 @@ class Auth {
   @Prop({ isRequired: true})
   user: User
 }
+
 @Controller('auth')
 export class AuthController {
   constructor(private authService: AuthService){ }

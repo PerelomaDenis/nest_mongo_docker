@@ -4,10 +4,14 @@ import { Model } from "mongoose";
 import { User, UserDocument } from "./schemas/user.schema";
 import { CreateUserDto } from "./dto/create-user.dto";
 import { UpdateUserDto } from "./dto/update-user.dto";
+import { FilesService } from "../files/files.service";
 
 @Injectable()
 export class UsersService {
-  constructor(@InjectModel(User.name) private userModel: Model<UserDocument>) {}
+  constructor(
+    @InjectModel(User.name) private userModel: Model<UserDocument>,
+    private filesService: FilesService
+  ) {}
 
   async getAll(): Promise<User[]> {
     return this.userModel.find().exec()
@@ -17,14 +21,15 @@ export class UsersService {
     return this.userModel.findById(id)
   }
 
-  async create(userDto: CreateUserDto): Promise<User> {
-    const newUser = new this.userModel(userDto)
+  async create(userDto: CreateUserDto, image?: any): Promise<User> {
+    console.log(2313);
+    const filename = await this.filesService.createFile(image)
+    const newUser = new this.userModel({ ...userDto, avatar: filename })
     return newUser.save()
   }
 
   async getUserByEmail(email: string) {
     const user = await this.userModel.findOne({ email })
-    // const user = await this.userModel.findOne({ where: { email }, include: { all: true } })
     return user
   }
 

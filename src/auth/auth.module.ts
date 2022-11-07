@@ -1,10 +1,11 @@
 import { forwardRef, Module } from "@nestjs/common";
+import { MongooseModule } from "@nestjs/mongoose";
+import { JwtModule } from "@nestjs/jwt";
+
 import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
-import { MongooseModule } from "@nestjs/mongoose";
 import { User, UserSchema } from "../users/schemas/user.schema";
 import { UsersModule } from "../users/users.module";
-import { JwtModule } from "@nestjs/jwt";
 
 @Module({
   controllers: [AuthController],

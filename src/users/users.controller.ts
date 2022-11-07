@@ -1,4 +1,16 @@
-import { Body, Controller, Delete, Get, Param, Post, Put, UseGuards, UsePipes } from "@nestjs/common";
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Post,
+  Put,
+  UploadedFile,
+  UseGuards,
+  UseInterceptors,
+  UsePipes
+} from "@nestjs/common";
 import { UsersService } from "./users.service";
 import { User } from "./schemas/user.schema";
 import { CreateUserDto } from "./dto/create-user.dto";
@@ -6,6 +18,7 @@ import { UpdateUserDto } from "./dto/update-user.dto";
 import { ApiOperation, ApiResponse, ApiTags } from "@nestjs/swagger";
 import { JwtAuthGuard } from "../auth/jwt-auth.guard";
 import { ValidationPipe } from "../pipes/validation.pipe";
+import { FileInterceptor } from "@nestjs/platform-express";
 
 @ApiTags('Пользователи')
 @Controller('users')
@@ -32,9 +45,10 @@ export class UsersController {
   @ApiResponse({ status: 200, type: User })
   @UseGuards(JwtAuthGuard)
   @UsePipes(ValidationPipe)
+  @UseInterceptors(FileInterceptor('avatar'))
   @Post()
-  create(@Body() userDto: CreateUserDto): Promise<User> {
-    return this.userService.create(userDto)
+  create(@Body() userDto: CreateUserDto, @UploadedFile() image): Promise<User> {
+    return this.userService.create(userDto, image)
   }
 
   @ApiOperation({ summary: 'Обновление пользователя' })
